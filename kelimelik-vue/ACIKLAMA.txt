@@ -1,0 +1,13 @@
+vue create kelimelik-vue
+cd kelimelik-vue
+bootstrap-vue kurulumu
+main.js e ilgili bootstrap eklemesi
+npm run serve
+
+* kelimelik oyunu temel yapısı, 4 harf, 5 harf, 6 harf vs. diye giden bir kelime soruları, harf alma var, ahrf sayısına göre puan alınıyor vs.
+görsel için 
+https://demagojist.com/wp-content/uploads/2019/10/kelime-oyunu-ali-ihsan-varol.png
+
+* işlemleri app vue da yapıp sonra componentlere parçalayacağız
+
+* genel yapıyı App.vue da çıkaralım
