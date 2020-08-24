@@ -22,11 +22,18 @@
           </div>
         </div>
       </div>
+      <div class="card-footer">harf puanı : {{ this.harfPuan }}</div>
+      <div class="card-footer">toplam puan : {{ this.puan }}</div>
       <div class="card-footer">
-       harf puanı : {{ this.harfPuan }}
-      </div>
-      <div class="card-footer">
-       toplam puan : {{ this.puan }}
+        <p>
+        <input type="text" class="form-control" placeholder="cevabı giriniz" v-model="yarismaciCevap" @keyup='yarismaciCevap = yarismaciCevap.toLocaleUpperCase("tr")'>
+
+        </p>
+        <p>
+        cevabınız : {{ yarismaciCevap }}
+
+        </p>
+        <button @click="cevapVer" class="btn btn-success">cevap ver</button>
       </div>
       <div class="card-footer">
         <button class="btn btn-secondary" @click="harfVer">harf ver</button>
@@ -68,12 +75,20 @@ export default {
       harfler: [],
       puan: 0,
       harfPuan: 0,
+      yarismaciCevap : "",
     };
   },
   methods: {
-    basla() {
+    basla(){
+      this.soruVer();
+    },
+    soruVer() {
       this.mevcutSoru = this.sorular.find((x) => !x.soruldu);
       //soruldu : false olan ik soruyu bul
+
+      if(!this.mevcutSoru){
+        alert( `tebrikler yarışmayı ${this.puan} puan ile tamaladın` )
+      }
       this.harfler = [];
       this.mevcutSoru.cevap.split("").map((x) => {
         this.harfler.push({
@@ -81,27 +96,43 @@ export default {
           acildi: false,
         });
       });
-      this.harfPuan = this.harfler.length * 100
+      this.harfPuan = this.harfler.length * 100;
+      this.mevcutSoru.soruldu = true;
     },
-    harfVer(){
-      //açılmamız harfi bulalım
-      let rastgeleHarfIndex = Math.floor(Math.random() * this.harfler.length)
-if(this.harfPuan <= 100){
-  return;
-}
+    harfVer() {
+      //açılmamış harfi bulalım
+      let rastgeleHarfIndex = Math.floor(Math.random() * this.harfler.length);
 
-      let harf = this.harfler[rastgeleHarfIndex]
+      //son harf kaldıysa harf vermesin
+      if (this.harfPuan <= 100) {
+        return;
+      }
 
-      while (harf.acildi){
-        rastgeleHarfIndex = Math.floor(Math.random() * this.harfler.length)
+      let harf = this.harfler[rastgeleHarfIndex];
+
+      while (harf.acildi) {
+        rastgeleHarfIndex = Math.floor(Math.random() * this.harfler.length);
         harf = this.harfler[rastgeleHarfIndex];
       }
       //harf açık old. sürece döngüyü çalıştır
-      
-      console.log(rastgeleHarfIndex)
-      harf.acildi = true
 
-      this.harfPuan -= 100
+      console.log(rastgeleHarfIndex);
+      harf.acildi = true;
+
+      this.harfPuan -= 100;
+    },
+    cevapVer(){
+      let cevap = this.yarismaciCevap.toLocaleUpperCase("tr");
+      this.yarismaciCevap = cevap
+
+      if(this.yarismaciCevap === this.mevcutSoru.cevap.toLocaleUpperCase("tr")){
+        // alert("tebrikler")
+        this.puan += this.harfPuan
+      } else {
+        this.puan -= this.harfPuan
+      }
+      this.soruVer()
+      //
     }
   },
 };
