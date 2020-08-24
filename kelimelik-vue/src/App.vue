@@ -86,8 +86,19 @@ export default {
     harfVer(){
       //açılmamız harfi bulalım
       let rastgeleHarfIndex = Math.floor(Math.random() * this.harfler.length)
-      console.log(rastgeleHarfIndex)
+if(this.harfPuan <= 100){
+  return;
+}
+
       let harf = this.harfler[rastgeleHarfIndex]
+
+      while (harf.acildi){
+        rastgeleHarfIndex = Math.floor(Math.random() * this.harfler.length)
+        harf = this.harfler[rastgeleHarfIndex];
+      }
+      //harf açık old. sürece döngüyü çalıştır
+      
+      console.log(rastgeleHarfIndex)
       harf.acildi = true
 
       this.harfPuan -= 100
