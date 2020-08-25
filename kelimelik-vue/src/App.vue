@@ -1,5 +1,12 @@
 <template>
   <div id="app" class="container">
+<div class="card mt-3">
+  <div class="card-body" v-if="tamamlandi">
+        tebrikler yarışmayı {{ this.puan }} puan ile tamamladınız
+      </div>
+</div>
+    
+
     <div class="card mt-4" v-if="!mevcutSoru">
       <div class="card-body">
         yarışmaya başlamak için başla butonuna basın
@@ -7,6 +14,7 @@
       <div class="card-footer">
         <button class="btn btn-primary" @click="basla">yarışmaya başla</button>
       </div>
+      
     </div>
     <div class="card mt-4" v-else>
       <div class="card-header">{{ mevcutSoru.soru }}</div>
@@ -26,13 +34,15 @@
       <div class="card-footer">toplam puan : {{ this.puan }}</div>
       <div class="card-footer">
         <p>
-        <input type="text" class="form-control" placeholder="cevabı giriniz" v-model="yarismaciCevap" @keyup='yarismaciCevap = yarismaciCevap.toLocaleUpperCase("tr")'>
-
+          <input
+            type="text"
+            class="form-control"
+            placeholder="cevabı giriniz"
+            v-model="yarismaciCevap"
+            @keyup="yarismaciCevap = yarismaciCevap.toLocaleUpperCase('tr')"
+          />
         </p>
-        <p>
-        cevabınız : {{ yarismaciCevap }}
-
-        </p>
+        <p>cevabınız : {{ yarismaciCevap }}</p>
         <button @click="cevapVer" class="btn btn-success">cevap ver</button>
       </div>
       <div class="card-footer">
@@ -75,19 +85,27 @@ export default {
       harfler: [],
       puan: 0,
       harfPuan: 0,
-      yarismaciCevap : "",
+      yarismaciCevap: "",
+      tamamlandi : false,
+      //yarışmanın bitmesi
     };
   },
   methods: {
-    basla(){
+    basla() {
+      this.mevcutSoru = null
+      this.puan = 0
+      this.sorular.map( x => {
+        x.soruldu = false
+      })
       this.soruVer();
     },
     soruVer() {
       this.mevcutSoru = this.sorular.find((x) => !x.soruldu);
       //soruldu : false olan ik soruyu bul
 
-      if(!this.mevcutSoru){
-        alert( `tebrikler yarışmayı ${this.puan} puan ile tamaladın` )
+      if (!this.mevcutSoru) {
+        //soru yoksa/kalmadıysa 
+        this.tamamlandi = true
       }
       this.harfler = [];
       this.mevcutSoru.cevap.split("").map((x) => {
@@ -121,19 +139,21 @@ export default {
 
       this.harfPuan -= 100;
     },
-    cevapVer(){
+    cevapVer() {
       let cevap = this.yarismaciCevap.toLocaleUpperCase("tr");
-      this.yarismaciCevap = cevap
+      this.yarismaciCevap = cevap;
 
-      if(this.yarismaciCevap === this.mevcutSoru.cevap.toLocaleUpperCase("tr")){
+      if (
+        this.yarismaciCevap === this.mevcutSoru.cevap.toLocaleUpperCase("tr")
+      ) {
         // alert("tebrikler")
-        this.puan += this.harfPuan
+        this.puan += this.harfPuan;
       } else {
-        this.puan -= this.harfPuan
+        this.puan -= this.harfPuan;
       }
-      this.soruVer()
+      this.soruVer();
       //
-    }
+    },
   },
 };
 </script>
