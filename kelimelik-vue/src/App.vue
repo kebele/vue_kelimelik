@@ -33,6 +33,7 @@
       <div class="card-footer">harf puanı : {{ this.harfPuan }}</div>
       <div class="card-footer">toplam puan : {{ this.puan }}</div>
       <div class="card-footer">
+        <p>kalan sure : <kbd>{{ kalanSure }}</kbd> saniye</p>
         <p>
           <input
             type="text"
@@ -88,24 +89,43 @@ export default {
       yarismaciCevap: "",
       tamamlandi : false,
       //yarışmanın bitmesi
+      sure : null,
+      kalanSure : 0,
     };
   },
   methods: {
     basla() {
+      this.tamamlandi = false
       this.mevcutSoru = null
       this.puan = 0
       this.sorular.map( x => {
         x.soruldu = false
       })
+      this.kalanSure = 240; //4dk
+      //yarışmada 4dk veriyoruz yarışma başladığında süre bundan azalmaya başlayacak, 
+      this.sure = setInterval(() => {
+        this.kalanSure--
+        if(this.kalanSure === 0){
+          this.bitir()
+        }  
+      }, 1000);
       this.soruVer();
     },
+    bitir(){
+      this.tamamlandi = true
+      this.mevcutSoru = null
+      clearInterval(this.sure);
+    },
     soruVer() {
+      this.yarismaciCevap = ""
       this.mevcutSoru = this.sorular.find((x) => !x.soruldu);
       //soruldu : false olan ik soruyu bul
 
       if (!this.mevcutSoru) {
         //soru yoksa/kalmadıysa 
-        this.tamamlandi = true
+        // this.tamamlandi = true
+        this.bitir();
+        return;
       }
       this.harfler = [];
       this.mevcutSoru.cevap.split("").map((x) => {
