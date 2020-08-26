@@ -24,16 +24,20 @@
       <div class="card-header">
         <h3 class="mb-0">{{ mevcutSoru.soru }}</h3>
       </div>
+      <!-- harfler bölümü -->
+      <!-- burayı komponent yaptığımız için aşağıdaki şekilde düzenleyeceğiz -->
       <div class="card-body">
         <div class="d-flex">
-          <div
+          <Harf :deger="harf.harf" :acik="harf.acildi" v-for="(harf, index) in harfler"
+            :key="'harf-' + index" />
+          <!-- <div
             class="harf shadow mr-3"
             v-for="(harf, index) in harfler"
             :key="'harf-' + index"
           >
             <span v-if="harf.acildi">{{ harf.harf }}</span>
             <span v-else></span>
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="card-footer">
@@ -69,9 +73,14 @@
 </template>
 
 <script>
+// import Harf from '@/components/Harf.vue'
+//main.js de tanımladığımız için burada gerek kalmadı
 export default {
   name: "App",
-  components: {},
+  components: {
+    // Harf,
+    //main.js de tanımladık
+  },
   data() {
     return {
       sorular: [
@@ -192,9 +201,9 @@ export default {
 
       console.log(rastgeleHarfIndex);
       harf.acildi = true;
-
       this.harfPuan -= 100;
     },
+
     cevapVer() {
 
       // if(!this.yarismaciCevap.length){
@@ -226,12 +235,5 @@ export default {
 </script>
 
 <style>
-.harf {
-  width: 100px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 30px;
-}
+
 </style>

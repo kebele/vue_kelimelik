@@ -13,3 +13,7 @@ https://demagojist.com/wp-content/uploads/2019/10/kelime-oyunu-ali-ihsan-varol.p
 * genel yapıyı App.vue da çıkaralım, template deki alanlar ve datadaki alanlar, oyundaki elemanlar, sorular, sorulan soru, sorulan sorunun cevabı, harfler, puan, harfin puanı,
 
 *basla func yapacağı şey sorulmayan ilk soruyu alıp mevcutSoru ya atamak
+
+*vbase vue standart snippet i
+
+* vprops props snippet i 
