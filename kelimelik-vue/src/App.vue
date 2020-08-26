@@ -1,23 +1,29 @@
 <template>
   <div id="app" class="container">
-<div class="card mt-3">
-  <div class="card-body" v-if="tamamlandi">
+    
+    <div class="card mt-3">
+      <div class="card-body" v-if="tamamlandi">
         tebrikler yarışmayı {{ this.puan }} puan ile tamamladınız
       </div>
-</div>
-    
+    </div>
 
     <div class="card mt-4" v-if="!mevcutSoru">
+      <div class="card-header">
+      <h4 class="mb-0">
+        kelime oyununa hoş geldin
+      </h4>
+    </div>
       <div class="card-body">
         yarışmaya başlamak için başla butonuna basın
       </div>
       <div class="card-footer">
         <button class="btn btn-primary" @click="basla">yarışmaya başla</button>
       </div>
-      
     </div>
     <div class="card mt-4" v-else>
-      <div class="card-header">{{ mevcutSoru.soru }}</div>
+      <div class="card-header">
+        <h3 class="mb-0">{{ mevcutSoru.soru }}</h3>
+      </div>
       <div class="card-body">
         <div class="d-flex">
           <div
@@ -30,11 +36,18 @@
           </div>
         </div>
       </div>
-      <div class="card-footer">harf puanı : {{ this.harfPuan }}</div>
-      <div class="card-footer">toplam puan : {{ this.puan }}</div>
       <div class="card-footer">
-        <p>kalan sure : <kbd>{{ kalanSure }}</kbd> saniye</p>
-        <p>
+        <div class="d-flex">
+          <div class="mr-4">toplam puan : {{ this.puan }}</div>
+          <div class="mr-4">
+            kalan sure : <kbd>{{ kalanSure }}</kbd> saniye
+          </div>
+          <div>harf puanı : {{ this.harfPuan }}</div>
+        </div>
+      </div>
+<div class="card-footer" :class="mesajClass" v-if="mesaj">{{ mesaj }}</div>
+      <div class="card-footer">
+        <div class="input-group">
           <input
             type="text"
             class="form-control"
@@ -42,9 +55,11 @@
             v-model="yarismaciCevap"
             @keyup="yarismaciCevap = yarismaciCevap.toLocaleUpperCase('tr')"
           />
-        </p>
-        <p>cevabınız : {{ yarismaciCevap }}</p>
-        <button @click="cevapVer" class="btn btn-success">cevap ver</button>
+          <div class="input-group-append">
+            <!-- <p>cevabınız : {{ yarismaciCevap }}</p> -->
+            <button @click="cevapVer" class="btn btn-success">cevap ver</button>
+          </div>
+        </div>
       </div>
       <div class="card-footer">
         <button class="btn btn-secondary" @click="harfVer">harf ver</button>
@@ -81,48 +96,69 @@ export default {
           soruldu: false,
         },
       ],
+      mesaj : null,
+      mesajClass : "",
+      mesajSure : null,
       mevcutSoru: null,
       cevap: "",
       harfler: [],
       puan: 0,
       harfPuan: 0,
       yarismaciCevap: "",
-      tamamlandi : false,
+      tamamlandi: false,
       //yarışmanın bitmesi
-      sure : null,
-      kalanSure : 0,
+      sure: null,
+      kalanSure: 0,
     };
   },
   methods: {
+    mesajGoster(mesaj, tur){
+      this.mesaj = mesaj
+      if( tur === "hata"){
+        this.mesajClass = "bg-danger text-white"
+      } else if ( tur === "basari"){
+       this.mesajClass = "bg-success text-white" 
+      } else {
+        this.mesajClass = "bg-dark text-white"
+      }
+      if(this.mesajSure){
+        clearTimeout(this.mesajSure)
+        this.mesajSure = null
+      }
+      this.mesajSure = setTimeout(() => {
+        this.mesaj = null
+      }, 3000);
+    },
     basla() {
-      this.tamamlandi = false
-      this.mevcutSoru = null
-      this.puan = 0
-      this.sorular.map( x => {
-        x.soruldu = false
-      })
+      this.tamamlandi = false;
+      this.mevcutSoru = null;
+      this.puan = 0;
+      this.sorular.map((x) => {
+        x.soruldu = false;
+      });
       this.kalanSure = 240; //4dk
-      //yarışmada 4dk veriyoruz yarışma başladığında süre bundan azalmaya başlayacak, 
+      //yarışmada 4dk veriyoruz yarışma başladığında süre bundan azalmaya başlayacak,
       this.sure = setInterval(() => {
-        this.kalanSure--
-        if(this.kalanSure === 0){
-          this.bitir()
-        }  
+        this.kalanSure--;
+        if (this.kalanSure === 0) {
+          this.bitir();
+        }
       }, 1000);
       this.soruVer();
+      this.mesajGoster("iyi yarışmalar")
     },
-    bitir(){
-      this.tamamlandi = true
-      this.mevcutSoru = null
+    bitir() {
+      this.tamamlandi = true;
+      this.mevcutSoru = null;
       clearInterval(this.sure);
     },
     soruVer() {
-      this.yarismaciCevap = ""
+      this.yarismaciCevap = "";
       this.mevcutSoru = this.sorular.find((x) => !x.soruldu);
       //soruldu : false olan ik soruyu bul
 
       if (!this.mevcutSoru) {
-        //soru yoksa/kalmadıysa 
+        //soru yoksa/kalmadıysa
         // this.tamamlandi = true
         this.bitir();
         return;
@@ -160,6 +196,15 @@ export default {
       this.harfPuan -= 100;
     },
     cevapVer() {
+
+      // if(!this.yarismaciCevap.length){
+      //   return;
+      // }
+      if(this.yarismaciCevap.length !== this.harfler.length){
+        this.mesajGoster("harf sayıları aynı değil")
+        return;
+      }
+
       let cevap = this.yarismaciCevap.toLocaleUpperCase("tr");
       this.yarismaciCevap = cevap;
 
@@ -168,7 +213,9 @@ export default {
       ) {
         // alert("tebrikler")
         this.puan += this.harfPuan;
+        this.mesajGoster("tebrikler", "basari")
       } else {
+         this.mesajGoster(`yanlış cevap doğrusu ${this.mevcutSoru.cevap} olmalıydı`, "hata")
         this.puan -= this.harfPuan;
       }
       this.soruVer();
