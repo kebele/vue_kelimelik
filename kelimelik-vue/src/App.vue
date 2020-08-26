@@ -24,6 +24,7 @@
       <div class="card-header">
         <h3 class="mb-0">{{ mevcutSoru.soru }}</h3>
       </div>
+      
       <!-- harfler bölümü -->
       <!-- burayı komponent yaptığımız için aşağıdaki şekilde düzenleyeceğiz -->
       <div class="card-body">
@@ -60,7 +61,8 @@
             @keyup="yarismaciCevap = yarismaciCevap.toLocaleUpperCase('tr')"
           />
           <div class="input-group-append">
-            <!-- <p>cevabınız : {{ yarismaciCevap }}</p> -->
+            <br>
+            <p> cevabınız : {{ yarismaciCevap }} </p><br>
             <button @click="cevapVer" class="btn btn-success">cevap ver</button>
           </div>
         </div>
@@ -179,6 +181,7 @@ export default {
           acildi: false,
         });
       });
+      
       this.harfPuan = this.harfler.length * 100;
       this.mevcutSoru.soruldu = true;
     },
@@ -199,7 +202,7 @@ export default {
       }
       //harf açık old. sürece döngüyü çalıştır
 
-      console.log(rastgeleHarfIndex);
+      // console.log(rastgeleHarfIndex);
       harf.acildi = true;
       this.harfPuan -= 100;
     },
@@ -216,6 +219,12 @@ export default {
 
       let cevap = this.yarismaciCevap.toLocaleUpperCase("tr");
       this.yarismaciCevap = cevap;
+
+      // yazılan cevabı kutulara koysun
+      let cevapKismi = cevap.split("")
+      console.log(cevapKismi);
+      // console.log(this.mevcutSoru.cevap)
+  
 
       if (
         this.yarismaciCevap === this.mevcutSoru.cevap.toLocaleUpperCase("tr")
